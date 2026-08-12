@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { siteConfig } from '@/lib/site-config'
 import { WhatsAppButton } from '@/components/whatsapp-button'
@@ -31,13 +32,13 @@ export function Hero() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <WhatsAppButton size="lg" />
-            <a
-              href="#products"
+            <Link
+              href="/catalog"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-7 text-base font-semibold text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:shadow-md"
             >
               View Catalog
               <ArrowRight className="size-4" aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </Reveal>
 

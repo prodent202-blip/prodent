@@ -1,10 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import type { SVGProps } from 'react'
 import {
-  Stethoscope,
-  Scissors,
-  FlaskConical,
-  Package,
   ShieldCheck,
   BadgeDollarSign,
   Truck,
@@ -22,17 +18,7 @@ export type IconComponent = (props: SVGProps<SVGSVGElement>) => React.ReactEleme
 
 export type NavLink = {
   label: string
-  /** In-page anchor (e.g. "#about") or route path. */
   href: string
-}
-
-export type ProductCategory = {
-  title: string
-  description: string
-  icon: LucideIcon
-  /** Placeholder image slot — swap in a real photo path later. */
-  image: string
-  imageAlt: string
 }
 
 export type Feature = {
@@ -58,59 +44,19 @@ export const siteConfig = {
     'Prodent imports premium dental and surgical instruments and dental materials from Pakistan and distributes them to dentists, clinics, and surgical supply buyers across Mauritius.',
 
   contact: {
-    // Replace with the real business email, phone, and WhatsApp number.
-    email: 'contact@prodent.mu',
-    phone: '+230 5XXX XXXX',
-    // International format, digits only — used to build the wa.me link.
-    whatsappNumber: '230XXXXXXXX',
+    email: 'prodent202@gmail.com',
+    phone: '+230 5508 0607',
+    whatsappNumber: '23055080607',
     whatsappMessage: "Hello Prodent, I'd like to know more about your dental and surgical products.",
-    location: 'Port Louis, Mauritius',
+    location: 'Grand Baie, Mauritius',
   },
-
-  /** Placeholder path — drop the real PDF at /public/catalog.pdf to activate. */
-  catalogPdf: '/catalog.pdf',
 } as const
 
 export const navLinks: NavLink[] = [
-  { label: 'Home', href: '#home' },
-  { label: 'Products', href: '#products' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
-]
-
-export const productCategories: ProductCategory[] = [
-  {
-    title: 'Dental Instruments',
-    description:
-      'Precision hand instruments for examination, restoration, and everyday clinical use.',
-    icon: Stethoscope,
-    image: '/images/category-dental-instruments.png',
-    imageAlt: 'Set of stainless steel dental instruments arranged on a tray',
-  },
-  {
-    title: 'Surgical Instruments',
-    description:
-      'Durable, sterilisable surgical tools engineered for reliability in the operating field.',
-    icon: Scissors,
-    image: '/images/category-surgical-instruments.png',
-    imageAlt: 'Surgical instruments laid out for a procedure',
-  },
-  {
-    title: 'Dental Materials',
-    description:
-      'Restorative and impression materials selected for consistent, professional results.',
-    icon: FlaskConical,
-    image: '/images/category-dental-materials.png',
-    imageAlt: 'Dental restorative materials and containers',
-  },
-  {
-    title: 'Consumables',
-    description:
-      'Gloves, gauze, disposables, and everyday clinic essentials kept reliably in stock.',
-    icon: Package,
-    image: '/images/category-consumables.png',
-    imageAlt: 'Boxed dental consumables and disposable supplies',
-  },
+  { label: 'Home', href: '/' },
+  { label: 'Catalog', href: '/catalog' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export const features: Feature[] = [
@@ -161,8 +107,14 @@ export const socialLinks: SocialLink[] = [
   },
 ]
 
-/** Builds the WhatsApp deep link from the config, encoding the prefilled message. */
-export function getWhatsAppLink(): string {
+/** Builds the WhatsApp deep link, optionally with a custom prefilled message. */
+export function getWhatsAppLink(message?: string): string {
   const { whatsappNumber, whatsappMessage } = siteConfig.contact
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
+  const text = message ?? whatsappMessage
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`
+}
+
+/** Prefilled WhatsApp message for a product enquiry. */
+export function getProductWhatsAppLink(productName: string): string {
+  return getWhatsAppLink(`Hello Prodent, I'd like to enquire about: ${productName}`)
 }

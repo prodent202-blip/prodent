@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { navLinks } from '@/lib/site-config'
@@ -10,6 +12,7 @@ import { WhatsAppButton } from '@/components/whatsapp-button'
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -17,6 +20,15 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname.startsWith(href)
+  }
 
   return (
     <header
@@ -36,12 +48,15 @@ export function Navbar() {
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                className={cn(
+                  'text-sm font-medium transition-colors hover:text-primary',
+                  isActive(link.href) ? 'text-primary' : 'text-muted-foreground',
+                )}
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -62,7 +77,6 @@ export function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
       <div
         id="mobile-menu"
         className={cn(
@@ -73,13 +87,15 @@ export function Navbar() {
         <ul className="flex flex-col gap-1 px-4 py-4">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary hover:text-primary"
+                className={cn(
+                  'block rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-secondary hover:text-primary',
+                  isActive(link.href) ? 'text-primary' : 'text-foreground',
+                )}
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
           <li className="mt-2 px-1">

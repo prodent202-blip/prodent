@@ -5,6 +5,8 @@ import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 type WhatsAppButtonProps = {
   /** Visible label. Defaults to a friendly CTA. */
   label?: string
+  /** Optional custom prefilled WhatsApp message. */
+  message?: string
   className?: string
   size?: 'md' | 'lg'
   variant?: 'brand' | 'outline'
@@ -21,13 +23,14 @@ const sizeStyles: Record<NonNullable<WhatsAppButtonProps['size']>, string> = {
  */
 export function WhatsAppButton({
   label = 'Get in Touch on WhatsApp',
+  message,
   className,
   size = 'md',
   variant = 'brand',
 }: WhatsAppButtonProps) {
   return (
     <a
-      href={getWhatsAppLink()}
+      href={getWhatsAppLink(message)}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(

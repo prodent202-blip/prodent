@@ -12,7 +12,7 @@ type LogoProps = {
 export function Logo({ className, priority = false }: LogoProps) {
   return (
     <Link
-      href="#home"
+      href="/"
       aria-label={`${siteConfig.name} — home`}
       className={cn(
         'inline-flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
