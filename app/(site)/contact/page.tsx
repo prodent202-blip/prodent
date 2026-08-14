@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { siteConfig } from '@/lib/site-config'
-import { safeGetSiteSetting } from '@/lib/supabase/queries'
+import { safeGetContactInfo, safeGetSiteSetting } from '@/lib/supabase/queries'
 import { DEFAULT_MAP_EMBED_URL } from '@/lib/types/catalog'
 import { SectionHeading } from '@/components/section-heading'
 import { ContactDetails } from '@/components/contact-details'
@@ -13,7 +13,10 @@ export const metadata: Metadata = {
 }
 
 export default async function ContactPage() {
-  const mapEmbedUrl = await safeGetSiteSetting('map_embed_url', DEFAULT_MAP_EMBED_URL)
+  const [contact, mapEmbedUrl] = await Promise.all([
+    safeGetContactInfo(),
+    safeGetSiteSetting('map_embed_url', DEFAULT_MAP_EMBED_URL),
+  ])
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -29,7 +32,7 @@ export default async function ContactPage() {
         <Reveal delay={80}>
           <div className="flex flex-col gap-6 rounded-3xl border border-border bg-card p-8 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground">Contact details</h2>
-            <ContactDetails />
+            <ContactDetails contact={contact} />
             <div className="border-t border-border pt-6">
               <p className="mb-4 text-sm text-muted-foreground">
                 The fastest way to reach us is on WhatsApp — tap below to start a chat.
@@ -55,7 +58,7 @@ export default async function ContactPage() {
               />
             </div>
             <p className="text-center text-sm text-muted-foreground">
-              Find us in Grand Baie — feel free to reach out before visiting to make sure
+              Find us in {contact.location} — feel free to reach out before visiting to make sure
               someone&apos;s available to assist you.
             </p>
           </div>

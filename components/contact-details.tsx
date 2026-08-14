@@ -1,14 +1,15 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
-import { siteConfig } from '@/lib/site-config'
+import type { ContactInfo } from '@/lib/contact'
 import { cn } from '@/lib/utils'
 
 type ContactDetailsProps = {
+  contact: ContactInfo
   className?: string
   /** Visual variant for light or inverted backgrounds. */
   variant?: 'default' | 'inverted'
 }
 
-export function ContactDetails({ className, variant = 'default' }: ContactDetailsProps) {
+export function ContactDetails({ contact, className, variant = 'default' }: ContactDetailsProps) {
   const isInverted = variant === 'inverted'
 
   const itemClass = cn(
@@ -30,21 +31,18 @@ export function ContactDetails({ className, variant = 'default' }: ContactDetail
     <div className={cn('flex flex-col gap-2.5', className)}>
       <div className={itemClass}>
         <MapPin className={iconClass} aria-hidden="true" />
-        <span>{siteConfig.contact.location}</span>
+        <span>{contact.location}</span>
       </div>
       <div className={itemClass}>
         <Mail className={iconClass} aria-hidden="true" />
-        <a href={`mailto:${siteConfig.contact.email}`} className={linkClass}>
-          {siteConfig.contact.email}
+        <a href={`mailto:${contact.email}`} className={linkClass}>
+          {contact.email}
         </a>
       </div>
       <div className={itemClass}>
         <Phone className={iconClass} aria-hidden="true" />
-        <a
-          href={`tel:${siteConfig.contact.phone.replace(/\s+/g, '')}`}
-          className={linkClass}
-        >
-          {siteConfig.contact.phone}
+        <a href={`tel:${contact.phone.replace(/\s+/g, '')}`} className={linkClass}>
+          {contact.phone}
         </a>
       </div>
     </div>

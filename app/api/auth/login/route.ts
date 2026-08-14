@@ -1,30 +1,41 @@
 import { NextResponse } from 'next/server'
-import {
-  COOKIE_NAME,
-  createSessionToken,
-  SESSION_DURATION_MS,
-  verifyPassword,
-} from '@/lib/auth/session'
+import { isAdminUser } from '@/lib/auth/admin'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json()
+    const { email, password } = await request.json()
 
-    if (!password || !verifyPassword(password)) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
+    if (!email?.trim() || !password) {
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
 
-    const token = createSessionToken()
-    const response = NextResponse.json({ success: true })
-    response.cookies.set(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: SESSION_DURATION_MS / 1000,
+    const supabase = await createClient()
+    if (!supabase) {
+      return NextResponse.json(
+        {
+          error:
+            'Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local, then restart the dev server.',
+        },
+        { status: 500 },
+      )
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
     })
 
-    return response
+    if (error || !data.user) {
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
+    }
+
+    if (!isAdminUser(data.user)) {
+      await supabase.auth.signOut()
+      return NextResponse.json({ error: 'You do not have admin access' }, { status: 403 })
+    }
+
+    return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Login failed' }, { status: 500 })
   }

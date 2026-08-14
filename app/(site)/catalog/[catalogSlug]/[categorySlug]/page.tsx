@@ -4,6 +4,7 @@ import {
   getCatalogBySlug,
   getCategoryBySlug,
   getProductsByCategoryId,
+  safeGetContactInfo,
 } from '@/lib/supabase/queries'
 import { SectionHeading } from '@/components/section-heading'
 import { CatalogBreadcrumb } from '@/components/catalog/breadcrumb'
@@ -33,7 +34,10 @@ export default async function CategoryProductsPage({ params }: PageProps) {
   const category = await getCategoryBySlug(catalog.id, categorySlug).catch(() => null)
   if (!category) notFound()
 
-  const products = await getProductsByCategoryId(category.id).catch(() => [])
+  const [products, contact] = await Promise.all([
+    getProductsByCategoryId(category.id).catch(() => []),
+    safeGetContactInfo(),
+  ])
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -54,7 +58,7 @@ export default async function CategoryProductsPage({ params }: PageProps) {
       </Reveal>
 
       <div className="mt-12">
-        <ProductGrid products={products} />
+        <ProductGrid products={products} contact={contact} />
       </div>
     </div>
   )

@@ -1,26 +1,24 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { COOKIE_NAME, verifySessionToken } from '@/lib/auth/session'
+import { isAuthenticatedAdmin, updateSession } from '@/lib/supabase/middleware'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const { response, user } = await updateSession(request)
+  const isAdmin = isAuthenticatedAdmin(user)
 
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    const token = request.cookies.get(COOKIE_NAME)?.value
-    if (!verifySessionToken(token)) {
+    if (!isAdmin) {
       const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('from', pathname)
       return NextResponse.redirect(loginUrl)
     }
   }
 
-  if (pathname === '/admin/login') {
-    const token = request.cookies.get(COOKIE_NAME)?.value
-    if (verifySessionToken(token)) {
-      return NextResponse.redirect(new URL('/admin', request.url))
-    }
+  if (pathname === '/admin/login' && isAdmin) {
+    return NextResponse.redirect(new URL('/admin', request.url))
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {

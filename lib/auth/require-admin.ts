@@ -1,8 +1,20 @@
-import { cookies } from 'next/headers'
-import { COOKIE_NAME, verifySessionToken } from '@/lib/auth/session'
+import type { User } from '@supabase/supabase-js'
+import { isAdminUser } from '@/lib/auth/admin'
+import { createClient } from '@/lib/supabase/server'
 
-export async function requireAdminSession(): Promise<boolean> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(COOKIE_NAME)?.value
-  return verifySessionToken(token)
+export async function requireAdminSession(): Promise<User | null> {
+  const supabase = await createClient()
+  if (!supabase) return null
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user || !isAdminUser(user)) return null
+  return user
+}
+
+export async function getAdminSession(): Promise<User | null> {
+  return requireAdminSession()
 }

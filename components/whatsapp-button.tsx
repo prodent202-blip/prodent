@@ -1,5 +1,8 @@
+'use client'
+
+import { buildWhatsAppLink } from '@/lib/contact'
+import { useContact } from '@/components/contact-provider'
 import { cn } from '@/lib/utils'
-import { getWhatsAppLink } from '@/lib/site-config'
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 
 type WhatsAppButtonProps = {
@@ -17,10 +20,6 @@ const sizeStyles: Record<NonNullable<WhatsAppButtonProps['size']>, string> = {
   lg: 'h-12 px-7 text-base',
 }
 
-/**
- * The single, config-driven WhatsApp CTA reused everywhere.
- * Opens the wa.me link (number + prefilled message from site-config) in a new tab.
- */
 export function WhatsAppButton({
   label = 'Get in Touch on WhatsApp',
   message,
@@ -28,9 +27,11 @@ export function WhatsAppButton({
   size = 'md',
   variant = 'brand',
 }: WhatsAppButtonProps) {
+  const contact = useContact()
+
   return (
     <a
-      href={getWhatsAppLink(message)}
+      href={buildWhatsAppLink(contact, message)}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(

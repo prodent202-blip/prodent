@@ -1,13 +1,16 @@
 import Image from 'next/image'
 import type { Product } from '@/lib/types/catalog'
-import { getProductWhatsAppLink } from '@/lib/site-config'
+import { buildProductWhatsAppLink, type ContactInfo } from '@/lib/contact'
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 
 type CatalogProductCardProps = {
   product: Product
+  contact: ContactInfo
 }
 
-export function CatalogProductCard({ product }: CatalogProductCardProps) {
+export function CatalogProductCard({ product, contact }: CatalogProductCardProps) {
+  const whatsappHref = buildProductWhatsAppLink(contact, product.name)
+
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
@@ -27,7 +30,7 @@ export function CatalogProductCard({ product }: CatalogProductCardProps) {
           </p>
         ) : null}
         <a
-          href={getProductWhatsAppLink(product.name)}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-auto inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#20bd5a]"

@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server'
-import { COOKIE_NAME } from '@/lib/auth/session'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST() {
-  const response = NextResponse.json({ success: true })
-  response.cookies.set(COOKIE_NAME, '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0,
-  })
-  return response
+  const supabase = await createClient()
+  if (!supabase) {
+    return NextResponse.json({ error: 'Authentication is not configured' }, { status: 500 })
+  }
+
+  await supabase.auth.signOut()
+  return NextResponse.json({ success: true })
 }

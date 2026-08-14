@@ -42,14 +42,6 @@ export const siteConfig = {
   tagline: 'Quality Dental & Surgical Instruments, Imported from Pakistan, Trusted in Mauritius',
   description:
     'Prodent imports premium dental and surgical instruments and dental materials from Pakistan and distributes them to dentists, clinics, and surgical supply buyers across Mauritius.',
-
-  contact: {
-    email: 'prodent202@gmail.com',
-    phone: '+230 5508 0607',
-    whatsappNumber: '23055080607',
-    whatsappMessage: "Hello Prodent, I'd like to know more about your dental and surgical products.",
-    location: 'Grand Baie, Mauritius',
-  },
 } as const
 
 export const navLinks: NavLink[] = [
@@ -106,15 +98,3 @@ export const socialLinks: SocialLink[] = [
     icon: LinkedinIcon,
   },
 ]
-
-/** Builds the WhatsApp deep link, optionally with a custom prefilled message. */
-export function getWhatsAppLink(message?: string): string {
-  const { whatsappNumber, whatsappMessage } = siteConfig.contact
-  const text = message ?? whatsappMessage
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`
-}
-
-/** Prefilled WhatsApp message for a product enquiry. */
-export function getProductWhatsAppLink(productName: string): string {
-  return getWhatsAppLink(`Hello Prodent, I'd like to enquire about: ${productName}`)
-}

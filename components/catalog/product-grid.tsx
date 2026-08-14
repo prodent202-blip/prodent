@@ -2,15 +2,17 @@
 
 import { useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
+import type { ContactInfo } from '@/lib/contact'
 import type { Product } from '@/lib/types/catalog'
 import { CatalogProductCard } from '@/components/catalog/catalog-product-card'
 import { Reveal } from '@/components/reveal'
 
 type ProductGridProps = {
   products: Product[]
+  contact: ContactInfo
 }
 
-export function ProductGrid({ products }: ProductGridProps) {
+export function ProductGrid({ products, contact }: ProductGridProps) {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
@@ -40,7 +42,7 @@ export function ProductGrid({ products }: ProductGridProps) {
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((product, i) => (
             <Reveal as="li" key={product.id} delay={i * 60} className="h-full">
-              <CatalogProductCard product={product} />
+              <CatalogProductCard product={product} contact={contact} />
             </Reveal>
           ))}
         </ul>

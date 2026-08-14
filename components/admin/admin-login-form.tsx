@@ -8,6 +8,7 @@ import { AdminField, adminInputClass } from '@/components/admin/admin-field'
 export function AdminLoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,7 +21,7 @@ export function AdminLoginForm() {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ email, password }),
     })
 
     if (res.ok) {
@@ -28,7 +29,8 @@ export function AdminLoginForm() {
       router.push(from)
       router.refresh()
     } else {
-      setError('Invalid password')
+      const data = await res.json().catch(() => ({}))
+      setError(data.error ?? 'Invalid email or password')
       setLoading(false)
     }
   }
@@ -41,18 +43,30 @@ export function AdminLoginForm() {
       >
         <h1 className="text-xl font-bold text-foreground">Admin Login</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Enter your password to manage catalogs and products.
+          Sign in with your admin account to manage the site.
         </p>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-4">
+          <AdminField label="Email">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={adminInputClass}
+              autoComplete="email"
+              required
+              autoFocus
+            />
+          </AdminField>
+
           <AdminField label="Password">
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={adminInputClass}
+              autoComplete="current-password"
               required
-              autoFocus
             />
           </AdminField>
         </div>

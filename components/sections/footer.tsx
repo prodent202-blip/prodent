@@ -1,10 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import type { ContactInfo } from '@/lib/contact'
 import { navLinks, siteConfig } from '@/lib/site-config'
 import { ContactDetails } from '@/components/contact-details'
 import { SocialLinks } from '@/components/social-links'
 
-export function Footer() {
+type FooterProps = {
+  contact: ContactInfo
+}
+
+export function Footer({ contact }: FooterProps) {
   const year = new Date().getFullYear()
 
   return (
@@ -46,7 +51,7 @@ export function Footer() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground">
               Connect
             </h2>
-            <ContactDetails />
+            <ContactDetails contact={contact} />
             <SocialLinks className="mt-1" />
           </div>
         </div>
