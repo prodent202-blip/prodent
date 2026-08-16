@@ -7,3 +7,5 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # NEXT_PUBLIC_* Supabase keys are designed to be in client/middleware bundles
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
