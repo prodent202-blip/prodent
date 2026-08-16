@@ -1,8 +1,9 @@
 [build]
   command = "pnpm build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.environment]
   NODE_VERSION = "20"
-
-# Netlify auto-detects Next.js and uses the OpenNext adapter.
-# Do not set a publish directory — the adapter handles output.
